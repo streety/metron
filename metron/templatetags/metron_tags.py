@@ -14,10 +14,14 @@ def analytics(context):
         code = codes.get(settings.SITE_ID)
         if code is not None:
             t = template.loader.get_template("metron/_%s.html" % kind)
+            try:
+                actions = activity.all(context["request"], kind)
+            except:
+                actions = []
             content += t.render(template.Context({
                 "code": code,
                 "user": context["user"],
-                "actions": activity.all(context["request"], kind)
+                "actions": actions,
             }))
     return content
 
